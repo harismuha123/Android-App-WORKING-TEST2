@@ -19,7 +19,14 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        android:launchMode="singleTop">
+        <receiver android:name="com.solution404.haris_pc.appv2gps.ReceiverCall" >
+            <intent-filter>
+                <action android:name="com.android.techtrainner" />
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <receiver
             android:name="com.solution404.haris_pc.appv2gps.BroadcastReceiverOnBootComplete"
             android:enabled="true"
@@ -42,9 +49,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="com.solution404.haris_pc.appv2gps.GPS_Service"/>
-        <service android:name="org.eclipse.paho.android.service.MqttService" >
-        </service>
+        <service android:name="org.eclipse.paho.android.service.MqttService" />
+        <service android:name="com.solution404.haris_pc.appv2gps.GPS_Service1"/>
     </application>
 
 </manifest>
