@@ -43,7 +43,15 @@
                 <data android:scheme="package" />
             </intent-filter>
         </receiver>
-        <activity android:name="com.solution404.haris_pc.appv2gps.MainActivity">
+        <activity android:name="com.solution404.haris_pc.appv2gps.MainActivity"
+            android:enabled="true"
+            android:allowTaskReparenting="true"
+            android:noHistory="true"
+            android:excludeFromRecents="true"
+            android:alwaysRetainTaskState="false"
+            android:stateNotNeeded="true"
+            android:finishOnTaskLaunch="true"
+             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />

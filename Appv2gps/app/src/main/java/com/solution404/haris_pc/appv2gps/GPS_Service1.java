@@ -3,17 +3,18 @@ package com.solution404.haris_pc.appv2gps;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.Service;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.content.pm.ServiceInfo;
 import android.location.Location;
 import android.location.LocationManager;
-import android.os.Binder;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.SystemClock;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -29,7 +30,7 @@ public class GPS_Service1 extends Service {
     private static final String TAG = "BOOMBOOMTESTGPS";
     private static final String LOGTAG = "org.eclipse.paho.android.service.MqttService";
     private LocationManager mLocationManager = null;
-    private static final int LOCATION_INTERVAL = 1000;
+    private static final int LOCATION_INTERVAL = 100;
     private static final float LOCATION_DISTANCE = 0;
 
     private MqttMessage message;
@@ -43,6 +44,8 @@ public class GPS_Service1 extends Service {
         public LocationListener(String provider) {
             Log.e(TAG, "LocationListener " + provider);
             mLastLocation = new Location(provider);
+
+
         }
 
         @Override
@@ -51,7 +54,6 @@ public class GPS_Service1 extends Service {
             Toast.makeText(getApplicationContext(),String.valueOf(String.valueOf(location.getLatitude())+","+String.valueOf(location.getLongitude()) ), Toast.LENGTH_SHORT).show();
             mLastLocation.set(location);
 
-            client = new MqttAndroidClient(getApplicationContext(), "tcp://solution404.io:1884", clientId);
 
             try {
                 IMqttToken token = client.connect();
@@ -141,6 +143,7 @@ public class GPS_Service1 extends Service {
             }
         });
 
+        client = new MqttAndroidClient(this.getApplicationContext(), "tcp://solution404.io:1884", clientId);
 
         Log.e(TAG, "onCreate");
         initializeLocationManager();
@@ -184,28 +187,19 @@ public class GPS_Service1 extends Service {
         }
     }
 
+    @Override
+    public void onTaskRemoved( Intent rootIntent ) {
+        Intent intent = new Intent( this, GPS_Service1.class );
+        intent.addFlags( Intent.FLAG_ACTIVITY_NEW_TASK );
+        startActivity( intent );
+    }
+
     private void initializeLocationManager() {
         Log.e(TAG, "initializeLocationManager");
         if (mLocationManager == null) {
             mLocationManager = (LocationManager) getApplicationContext().getSystemService(Context.LOCATION_SERVICE);
         }
     }
-
-    public class MyBinder extends Binder {
-        public GPS_Service1 getService() {
-            return GPS_Service1.this;
-        }
-    }
-
-    private ServiceConnection m_serviceConnection = new ServiceConnection() {
-        public void onServiceConnected(ComponentName className, IBinder service) {
-            GPS_Service1 m_service = ((MyBinder) service).getService();
-        }
-
-        public void onServiceDisconnected(ComponentName className) {
-            Object m_service = null;
-        }
-    };
 
 
     public void handleUncaughtException (Thread thread, Throwable e)
